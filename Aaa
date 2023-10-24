@@ -68,6 +68,39 @@ MN_C
 	 ADD C  
 	 ADD D  
 	 RET  
+---------------------------------
+WPROWADZANIE  
+CYFRA_1  
+	 STC  
+	 CMC  
+	 RST 2  
+	 CPI '1'  
+	 JC CYFRA_1  
+	 CPI '9'  
+	 JNC CYFRA_1  
+	 SUI 48  
+	 MOV B,A  
+CYFRA_2  
+	 STC  
+	 CMC  
+	 RST 2  
+	 CPI '0'  
+	 JC CYFRA_2  
+	 CPI '9'  
+	 JNC CYFRA_2  
+	 SUI 48  
+	 MOV C,A  
+CYFRA_3  
+	 STC  
+	 CMC  
+	 RST 2  
+	 CPI '0'  
+	 JC CYFRA_3  
+	 CPI '9'  
+	 JNC CYFRA_3  
+	 SUI 48  
+	 MOV D,A  
+	 RET  
 ;---------------------------------------                                              
 BINARNA  
 	 MVI B,8  
