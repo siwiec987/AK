@@ -1,8 +1,7 @@
  ORG 800H  
 	 LXI H,START_TEKST  
 	 RST 7  
-	 CALL WPROWADZANIE  
-	 MOV D,A  
+	 CALL WPROWADZANIE   
 	 LXI H,BIN_TEKST  
 	 RST 7  
 	 CALL BINARNA  
@@ -11,7 +10,7 @@
 	 MOV A,D  
 	 RST 4  
 	 HLT  
-;---------------------------------                                                                   
+;---------------------------------                                                                     
 WPROWADZANIE  
 CYFRA_1  
 	 MVI E,1  
@@ -67,7 +66,7 @@ CZY_BAJT
 	 JM POWTORZ  
 ZAPIS_LICZBY  
 	 MVI E,100  
-	 MVI A,00H  
+	 MVI A,0
 MN_B  
 	 ADD B  
 	 DCR E  
@@ -75,19 +74,18 @@ MN_B
 	 MOV B,A  
 DWIE_CYFRY  
 	 MVI E,10  
-	 MVI A,00H  
+	 MVI A,0  
 MN_C  
 	 ADD C  
 	 DCR E  
 	 JNZ MN_C  
 	 MOV C,A  
-	 MVI A,00H  
+	 MVI A,0  
 	 ADD B  
 	 ADD C  
 	 ADD D  
-	 RET  
-JEDNA_CYFRA  
-	 MOV A,D  
+	 MOV D,A     
+JEDNA_CYFRA     
 	 RET  
 POWTORZ  
 	 MVI A,8  
@@ -95,7 +93,7 @@ POWTORZ
 	 DCR E  
 	 JNZ POWTORZ  
 	 JMP CYFRA_1  
-;---------------------------------------                                                                                                                 
+;---------------------------------------                                                                                                                   
 BINARNA  
 	 MVI C,8  
 	 MOV A,D  
@@ -109,14 +107,14 @@ BIN_START
 	 DCR C  
 	 JNZ BIN_START  
 	 RET  
-;---------------------------------------                                                                                                                                                                                                                 
+;---------------------------------------                                                                                                                                                                                                                   
 START_TEKST  
-	 DB 'Podaj liczbe:@'                 
+	 DB 'Podaj liczbe:@'                   
 BIN_TEKST  
-	 DB 'Reprezentacja binarna:@'                 
+	 DB 'Reprezentacja binarna:@'                   
 HEX_TEKST  
-	 DB 'Reprezentacja heksadecymalna:@'                 
-;---------------------------------------                                                                                                                                                           
+	 DB 'Reprezentacja heksadecymalna:@'                   
+;---------------------------------------                                                                                                                                                             
 	 ORG 0B00H ;RST 7  
 	 CALL NOWA_LINIA  
 START  
@@ -129,7 +127,7 @@ START
 KONIEC  
 	 CALL NOWA_LINIA  
 	 RET  
-;---------------------------------------                                                                                                                                            
+;---------------------------------------                                                                                                                                              
 NOWA_LINIA  
 	 MVI A,0AH  
 	 RST 1  
