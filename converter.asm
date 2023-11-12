@@ -1,4 +1,4 @@
-ORG 800H  
+ ORG 800H  
 	 LXI H,START_TEKST  
 	 RST 7  
 	 CALL WPROWADZANIE  
@@ -11,41 +11,44 @@ ORG 800H
 	 MOV A,D  
 	 RST 4  
 	 HLT  
-;---------------------------------                                                 
+;---------------------------------                                                                   
 WPROWADZANIE  
 CYFRA_1  
+	 MVI E,1  
 	 STC  
 	 CMC  
 	 RST 2  
 	 CPI '0'  
-	 JC CYFRA_1  
+	 JC POWTORZ  
 	 CPI ':'  
-	 JNC CYFRA_1  
+	 JNC POWTORZ  
 	 SUI 48  
 	 MOV D,A  
 CYFRA_2  
+	 INR E  
 	 STC  
 	 CMC  
 	 RST 2  
 	 CPI 0DH  
 	 JZ JEDNA_CYFRA  
 	 CPI '0'  
-	 JC CYFRA_2  
+	 JC POWTORZ  
 	 CPI ':'  
-	 JNC CYFRA_2  
+	 JNC POWTORZ  
 	 SUI 48  
 	 MOV C,D  
 	 MOV D,A  
 CYFRA_3  
+	 INR E  
 	 STC  
 	 CMC  
 	 RST 2  
 	 CPI 0DH  
 	 JZ DWIE_CYFRY  
 	 CPI '0'  
-	 JC CYFRA_3  
+	 JC POWTORZ  
 	 CPI ':'  
-	 JNC CYFRA_3  
+	 JNC POWTORZ  
 	 SUI 48  
 	 MOV B,C  
 	 MOV C,D  
@@ -53,15 +56,15 @@ CYFRA_3
 CZY_BAJT  
 	 MVI A,2  
 	 SUB B  
-	 JM CYFRA_1  
+	 JM POWTORZ  
 	 JNZ ZAPIS_LICZBY  
 	 MVI A,5  
 	 SUB C  
-	 JM CYFRA_1  
+	 JM POWTORZ  
 	 JNZ ZAPIS_LICZBY  
 	 MVI A,5  
 	 SUB D  
-	 JM CYFRA_1  
+	 JM POWTORZ  
 ZAPIS_LICZBY  
 	 MVI E,100  
 	 MVI A,00H  
@@ -86,7 +89,13 @@ MN_C
 JEDNA_CYFRA  
 	 MOV A,D  
 	 RET  
-;---------------------------------------                                                                                               
+POWTORZ  
+	 MVI A,8  
+	 RST 1  
+	 DCR E  
+	 JNZ POWTORZ  
+	 JMP CYFRA_1  
+;---------------------------------------                                                                                                                 
 BINARNA  
 	 MVI C,8  
 	 MOV A,D  
@@ -100,16 +109,16 @@ BIN_START
 	 DCR C  
 	 JNZ BIN_START  
 	 RET  
-;---------------------------------------                                                                                                                                                                                               
+;---------------------------------------                                                                                                                                                                                                                 
 START_TEKST  
-	 DB 'Podaj liczbe:@'                             
+	 DB 'Podaj liczbe:@'                 
 BIN_TEKST  
-	 DB 'Reprezentacja binarna:@'                             
+	 DB 'Reprezentacja binarna:@'                 
 HEX_TEKST  
-	 DB 'Reprezentacja heksadecymalna:@'                             
-;---------------------------------------                                                                                                                                         
+	 DB 'Reprezentacja heksadecymalna:@'                 
+;---------------------------------------                                                                                                                                                           
 	 ORG 0B00H ;RST 7  
-CALL NOWA_LINIA  
+	 CALL NOWA_LINIA  
 START  
 	 MOV A,M  
 	 CPI '@'  
@@ -120,7 +129,7 @@ START
 KONIEC  
 	 CALL NOWA_LINIA  
 	 RET  
-;---------------------------------------                                                                                                                          
+;---------------------------------------                                                                                                                                            
 NOWA_LINIA  
 	 MVI A,0AH  
 	 RST 1  
