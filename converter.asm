@@ -1,16 +1,21 @@
- ORG 800H  
+ORG 800H  
 	 LXI H,START_TEKST  
-	 RST 7  
-	 CALL WPROWADZANIE   
+	 RST 3  
+	 CALL NOWA_LINIA  
+	 CALL WPROWADZANIE  
+	 CALL NOWA_LINIA  
 	 LXI H,BIN_TEKST  
-	 RST 7  
+	 RST 3  
+	 CALL NOWA_LINIA  
 	 CALL BINARNA  
+	 CALL NOWA_LINIA  
 	 LXI H,HEX_TEKST  
-	 RST 7  
+	 RST 3  
+	 CALL NOWA_LINIA  
 	 MOV A,D  
 	 RST 4  
 	 HLT  
-;---------------------------------                                                                     
+;---------------------------------                                                                                             
 WPROWADZANIE  
 CYFRA_1  
 	 MVI E,1  
@@ -66,7 +71,7 @@ CZY_BAJT
 	 JM POWTORZ  
 ZAPIS_LICZBY  
 	 MVI E,100  
-	 MVI A,0
+	 MVI A,0  
 MN_B  
 	 ADD B  
 	 DCR E  
@@ -84,16 +89,16 @@ MN_C
 	 ADD B  
 	 ADD C  
 	 ADD D  
-	 MOV D,A     
-JEDNA_CYFRA     
+	 MOV D,A  
+JEDNA_CYFRA  
 	 RET  
 POWTORZ  
-	 MVI A,8  
+	 MVI A,8 ;backspace  
 	 RST 1  
 	 DCR E  
 	 JNZ POWTORZ  
 	 JMP CYFRA_1  
-;---------------------------------------                                                                                                                   
+;---------------------------------------                                                                                                                                           
 BINARNA  
 	 MVI C,8  
 	 MOV A,D  
@@ -107,30 +112,17 @@ BIN_START
 	 DCR C  
 	 JNZ BIN_START  
 	 RET  
-;---------------------------------------                                                                                                                                                                                                                   
+;---------------------------------------                                                                                                                                                                                                                                           
 START_TEKST  
-	 DB 'Podaj liczbe:@'                   
+	 DB 'Podaj liczbe:@'    
 BIN_TEKST  
-	 DB 'Reprezentacja binarna:@'                   
+	 DB 'Reprezentacja binarna:@'             
 HEX_TEKST  
-	 DB 'Reprezentacja heksadecymalna:@'                   
-;---------------------------------------                                                                                                                                                             
-	 ORG 0B00H ;RST 7  
-	 CALL NOWA_LINIA  
-START  
-	 MOV A,M  
-	 CPI '@'  
-	 JZ KONIEC  
-	 RST 1  
-	 INX H  
-	 JMP START  
-KONIEC  
-	 CALL NOWA_LINIA  
-	 RET  
-;---------------------------------------                                                                                                                                              
+	 DB 'Reprezentacja heksadecymalna:@'             
+;---------------------------------------                                                                                                                                                                      
 NOWA_LINIA  
-	 MVI A,0AH  
+	 MVI A,0AH ;new line  
 	 RST 1  
-	 MVI A,0DH  
+	 MVI A,0DH ;carriage return  
 	 RST 1  
 	 RET  
