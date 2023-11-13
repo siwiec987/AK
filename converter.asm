@@ -93,10 +93,11 @@ MN_C
 JEDNA_CYFRA  
 	 RET  
 POWTORZ  
-	 MVI A,8 ;backspace  
+	 MVI A,8 ;backspace
+POWTORZ_1
 	 RST 1  
 	 DCR E  
-	 JNZ POWTORZ  
+	 JNZ POWTORZ_1
 	 JMP CYFRA_1  
 ;---------------------------------------                                                                                                                                           
 BINARNA  
