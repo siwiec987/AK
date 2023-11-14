@@ -15,7 +15,7 @@ ORG 800H
 	 MOV A,D  
 	 RST 4  
 	 HLT  
-;---------------------------------                                                                                             
+;---------------------------------                                                                                                 
 WPROWADZANIE  
 CYFRA_1  
 	 MVI E,1  
@@ -93,13 +93,13 @@ MN_C
 JEDNA_CYFRA  
 	 RET  
 POWTORZ  
-	 MVI A,8 ;backspace
-POWTORZ_1
+	 MVI A,8 ;backspace  
+POWTORZ_1  
 	 RST 1  
 	 DCR E  
-	 JNZ POWTORZ_1
+	 JNZ POWTORZ_1  
 	 JMP CYFRA_1  
-;---------------------------------------                                                                                                                                           
+;---------------------------------------                                                                                                                                               
 BINARNA  
 	 MVI C,8  
 	 MOV A,D  
@@ -113,14 +113,14 @@ BIN_START
 	 DCR C  
 	 JNZ BIN_START  
 	 RET  
-;---------------------------------------                                                                                                                                                                                                                                           
+;---------------------------------------                                                                                                                                                                                                                                               
 START_TEKST  
-	 DB 'Podaj liczbe:@'    
+	 DB 'Podaj liczbe:@'        
 BIN_TEKST  
-	 DB 'Reprezentacja binarna:@'             
+	 DB 'Reprezentacja binarna:@'                 
 HEX_TEKST  
-	 DB 'Reprezentacja heksadecymalna:@'             
-;---------------------------------------                                                                                                                                                                      
+	 DB 'Reprezentacja heksadecymalna:@'                 
+;---------------------------------------                                                                                                                                                                          
 NOWA_LINIA  
 	 MVI A,0AH ;new line  
 	 RST 1  
