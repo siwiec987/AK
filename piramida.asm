@@ -11,19 +11,19 @@ start:	mov	ax, _data	;ax <- adr [_data]
 ;---------------------------------
 ;	clear screen
 ;---------------------------------
-    mov ax,0b800h	;extra segment
+    	mov ax,0b800h		;extra segment
 	mov	es,ax		;es = pamiec ekranu
 	mov cx,2000		;loop counter (80x25)
 	
-	mov	di,0		;offset
+	mov di,0		;offset
 	mov al,' '		;znak
 	mov ah,7		;atrybut
 	
 CSLOOP:	
-    mov es:[di],ax	;adr logiczny
+    	mov es:[di],ax		;adr logiczny
 	add	di,2		;next char
 	
-	dec cx		    ;next iteration
+	dec cx		    	;next iteration
 	jnz	CSLOOP		;jump
 
 ;---------------------------------
@@ -58,9 +58,9 @@ PLOOP:
 PRINT:	
 	mov	es:[di],ax	;print letter
 	add	di,2		;next character position
-	dec	cl		    ;decrease character counter
+	dec	cl		;decrease character counter
 	jnz	PRINT		;repeat if not 0
-	ret			    ;return
+	ret			;return
 
 FINISH:
 ;=================================
