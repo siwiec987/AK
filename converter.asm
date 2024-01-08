@@ -1,129 +1,209 @@
-ORG 800H  
-	 LXI H,START_TEKST  
-	 RST 3  
-	 CALL NOWA_LINIA  
-	 CALL WPROWADZANIE  
-	 CALL NOWA_LINIA  
-	 LXI H,BIN_TEKST  
-	 RST 3  
-	 CALL NOWA_LINIA  
-	 CALL BINARNA  
-	 CALL NOWA_LINIA  
-	 LXI H,HEX_TEKST  
-	 RST 3  
-	 CALL NOWA_LINIA  
-	 MOV A,D  
-	 RST 4  
-	 HLT  
-;---------------------------------                                                                                                 
-WPROWADZANIE  
-CYFRA_1  
-	 MVI E,1  
-	 STC  
-	 CMC  
-	 RST 2  
-	 CPI '0'  
-	 JC POWTORZ  
-	 CPI ':'  
-	 JNC POWTORZ  
-	 SUI 48  
-	 MOV D,A  
-CYFRA_2  
-	 INR E  
-	 STC  
-	 CMC  
-	 RST 2  
-	 CPI 0DH  
-	 JZ JEDNA_CYFRA  
-	 CPI '0'  
-	 JC POWTORZ  
-	 CPI ':'  
-	 JNC POWTORZ  
-	 SUI 48  
-	 MOV C,D  
-	 MOV D,A  
-CYFRA_3  
-	 INR E  
-	 STC  
-	 CMC  
-	 RST 2  
-	 CPI 0DH  
-	 JZ DWIE_CYFRY  
-	 CPI '0'  
-	 JC POWTORZ  
-	 CPI ':'  
-	 JNC POWTORZ  
-	 SUI 48  
-	 MOV B,C  
-	 MOV C,D  
-	 MOV D,A  
-CZY_BAJT  
-	 MVI A,2  
-	 SUB B  
-	 JM POWTORZ  
-	 JNZ ZAPIS_LICZBY  
-	 MVI A,5  
-	 SUB C  
-	 JM POWTORZ  
-	 JNZ ZAPIS_LICZBY  
-	 MVI A,5  
-	 SUB D  
-	 JM POWTORZ  
-ZAPIS_LICZBY  
-	 MVI E,100  
-	 MVI A,0  
-MN_B  
-	 ADD B  
-	 DCR E  
-	 JNZ MN_B  
-	 MOV B,A  
-DWIE_CYFRY  
-	 MVI E,10  
-	 MVI A,0  
-MN_C  
-	 ADD C  
-	 DCR E  
-	 JNZ MN_C  
-	 MOV C,A  
-	 MVI A,0  
-	 ADD B  
-	 ADD C  
-	 ADD D  
-	 MOV D,A  
-JEDNA_CYFRA  
-	 RET  
-POWTORZ  
-	 MVI A,8 ;backspace  
-POWTORZ_1  
-	 RST 1  
-	 DCR E  
-	 JNZ POWTORZ_1  
-	 JMP CYFRA_1  
-;---------------------------------------                                                                                                                                               
-BINARNA  
-	 MVI C,8  
-	 MOV A,D  
-BIN_START  
-	 RAL  
-	 MOV B,A  
-	 MVI A,0  
-	 ACI 48  
-	 RST 1  
-	 MOV A,B  
-	 DCR C  
-	 JNZ BIN_START  
-	 RET  
-;---------------------------------------                                                                                                                                                                                                                                               
-START_TEKST  
-	 DB 'Podaj liczbe:@'        
-BIN_TEKST  
-	 DB 'Reprezentacja binarna:@'                 
-HEX_TEKST  
-	 DB 'Reprezentacja heksadecymalna:@'                 
-;---------------------------------------                                                                                                                                                                          
-NOWA_LINIA  
-	 MVI A,0AH ;new line  
-	 RST 1  
-	 MVI A,0DH ;carriage return  
-	 RST 1  
-	 RET  
+_code segment
+	assume  cs:_code
+
+start:	mov	ax, _data
+	mov	ds, ax
+	assume	ds:_data
+	mov	ax, _stack
+	mov	ss, ax
+	assume	ss:_stack
+	mov	sp, top_stack
+;-------------------------------------          
+    
+    lea dx, start_msg
+    mov ah, 09h
+    int 21h
+    
+    call wprowadzanie
+            
+    lea dx, bin_msg
+    mov ah, 09h
+    int 21h
+    
+    call binarna
+    
+    lea dx, hex_msg
+    mov ah, 09h
+    int 21h
+    
+    call heksadecymalna
+    
+koniec:
+	mov	ah, 4ch
+	mov	al, 0
+	int	21h
+
+;-----------------------------------------------------------------
+	
+wprowadzanie:
+    mov cx, 7 
+	mov ah, 01h
+	int 21h
+	inc ile_znakow
+ 
+    cmp al, '-'
+    jne pierwsza_cyfra
+    mov czy_ujemna, 1
+    
+    ;mov ah, 01h
+    ;int 21h
+    ;inc ile_znakow
+    
+;pierwsza_cyfra:    
+    ;cmp	al, '1'	
+	;jb	powtorz
+	;cmp	al, '9'
+	;ja	powtorz
+	;jmp dalej
+
+petla:    
+    mov ah, 01h
+    int 21h
+    inc ile_znakow
+         
+	cmp	al, 0dh	
+	je enter
+   
+pierwsza_cyfra:
+	cmp	al, '0'	
+	jb	powtorz
+	cmp	al, '9'
+	ja	powtorz
+	
+dalej:
+	sub al, '0'
+	mov	dl, al
+	mov	ax, bx
+
+	shl	bx, 1
+	jc powtorz		; mnozenie x10
+
+	shl	ax, 1 
+	jc powtorz
+	shl	ax, 1 
+	jc powtorz
+	shl	ax, 1
+	jc powtorz
+
+	add	bx, ax
+	jc powtorz		; koniec mnozenia, bx=bx*10
+
+	add	bl, dl		; dodajemy cyfre
+	adc	bh, 0
+	jc powtorz
+
+	loop petla
+
+enter:
+    cmp czy_ujemna, 1
+    jne dodatnia
+    cmp bx, 32768
+    ja powtorz
+    neg bx
+    jmp wprowadzanie_koniec
+    
+dodatnia:
+    cmp bx, 32767
+    ja powtorz 
+
+wprowadzanie_koniec:
+    mov liczba, bx      
+    ret
+    
+powtorz:
+    mov ah, 02h
+    mov bh, 0
+    mov dh, 1
+    mov dl, 0
+    int 10h
+         
+    mov al, ile_znakow
+    cbw
+    mov cx, ax
+    mov ah, 0ah
+    mov al, ' '
+    int 10h
+    
+    mov ax, 0
+    mov bx, 0
+    mov cx, 0
+    mov dx, 0
+    mov czy_ujemna, 0
+    mov ile_znakow, 0
+    
+    jmp wprowadzanie
+    
+;-----------------------------------------------------------------
+
+binarna:
+    mov cx, 16  
+    
+bin_petla:
+    mov ax, 0         
+    rcl bx, 1
+    adc al, '0'
+ 
+    mov dl, al
+    mov ah, 02h
+    int 21h
+    
+    loop bin_petla
+    ret
+    
+;-----------------------------------------------------------------	  
+
+heksadecymalna:
+    mov ax, liczba
+    mov bx, 10h
+    mov dx, 0  
+    
+    cmp ax, 0
+    jne hex_petla
+    mov cx, 1
+    jmp hex_print2
+    
+hex_petla:
+    cmp ax, 0
+    je hex_print
+    div bx
+    push dx
+    inc cx
+    mov dx, 0
+    
+    jmp hex_petla
+    
+hex_print:
+    ;cmp cx, 0
+    
+    pop dx
+    cmp dx, 9
+    jle hex_print2
+    add dx, 7
+    
+hex_print2:
+    add dx, '0'
+    mov ah, 02h
+    int 21h
+    
+    loop hex_print
+    
+    ret
+
+;-----------------------------------------------------------------	
+
+_code ends
+
+_data segment
+	start_msg db 'Podaj liczbe:', 0dh, 0ah, '$'     
+    bin_msg db 0dh, 0ah, 'Reprezentacja binarna:', 0dh, 0ah, '$'                 
+    hex_msg db 0dh, 0ah, 'Reprezentacja heksadecymalna:', 0dh, 0ah, '$'
+    liczba dw ?
+    ile_znakow db 0
+    czy_ujemna db 0
+_data ends
+
+_stack segment stack
+	top_stack	equ 100h
+_stack ends
+
+end start
