@@ -44,17 +44,6 @@ wprowadzanie:
     cmp al, '-'
     jne pierwsza_cyfra
     mov czy_ujemna, 1
-    
-    ;mov ah, 01h
-    ;int 21h
-    ;inc ile_znakow
-    
-;pierwsza_cyfra:    
-    ;cmp	al, '1'	
-	;jb	powtorz
-	;cmp	al, '9'
-	;ja	powtorz
-	;jmp dalej
 
 petla:    
     mov ah, 01h
@@ -111,18 +100,18 @@ wprowadzanie_koniec:
     ret
     
 powtorz:
-    mov ah, 02h
-    mov bh, 0
-    mov dh, 1
-    mov dl, 0
+    mov ah, 02h        ;ustawianie pozycji kursora
+    mov bh, 0          ;nr strony graficznej
+    mov dh, 1          ;nr wiersza
+    mov dl, 0          ;nr kolumny
     int 10h
          
-    mov al, ile_znakow
-    cbw
-    mov cx, ax
-    mov ah, 0ah
-    mov al, ' '
-    int 10h
+    mov al, ile_znakow ;zamiana bajtu w al
+    cbw                ;
+    mov cx, ax         ;na slowo w ax
+    mov ah, 0ah        ;
+    mov al, ' '        ;czyszczenie ekranu
+    int 10h            ;
     
     mov ax, 0
     mov bx, 0
@@ -139,11 +128,10 @@ binarna:
     mov cx, 16  
     
 bin_petla:
-    mov ax, 0         
+    mov dl, 0         
     rcl bx, 1
-    adc al, '0'
- 
-    mov dl, al
+    adc dl, '0'
+
     mov ah, 02h
     int 21h
     
@@ -173,8 +161,6 @@ hex_petla:
     jmp hex_petla
     
 hex_print:
-    ;cmp cx, 0
-    
     pop dx
     cmp dx, 9
     jle hex_print2
@@ -186,7 +172,6 @@ hex_print2:
     int 21h
     
     loop hex_print
-    
     ret
 
 ;-----------------------------------------------------------------	
